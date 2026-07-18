@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRMPY — Prompt & Hashtag</title>
+    <style>
+        /* ── Reset & dasar ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f6f8fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 860px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+            padding: 40px 36px;
+            transition: all 0.2s;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0b1a33;
+            background: #eef3fc;
+            padding: 6px 16px 6px 14px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo span {
+            color: #3b7cff;
+        }
+
+        .badge {
+            font-size: 13px;
+            font-weight: 500;
+            color: #3b7cff;
+            background: #e9effa;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+        }
+
+        .header-right {
+            font-size: 14px;
+            color: #64748b;
+            background: #f1f4f9;
+            padding: 6px 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-right .dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* ── Subtitle ── */
+        .subtitle {
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 28px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border-left: 4px solid #3b7cff;
+            font-style: italic;
+        }
+
+        .subtitle strong {
+            color: #0b1a33;
+            font-style: normal;
+        }
+
+        /* ── Section Divider ── */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0 18px 0;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8a9bb5;
+        }
+        .section-divider hr {
+            flex: 1;
+            border: none;
+            border-top: 2px dashed #e2e8f0;
+        }
+
+        /* ── Daftar item ── */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fafbfd;
+            border-radius: 16px;
+            padding: 18px 20px 16px 20px;
+            border: 1px solid #edf0f5;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .item:hover {
+            border-color: #d0d9e6;
+            background: #f8faff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .item.rekomendasi {
+            background: #fffbeb;
+            border-color: #fcd34d;
+        }
+        .item.rekomendasi:hover {
+            border-color: #fbbf24;
+            background: #fffbeb;
+        }
+        .item.rekomendasi .label {
+            color: #b45309;
+        }
+
+        .item .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item .content .label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #3b7cff;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .item .content .text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #1e293b;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-weight: 400;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #eef2f6;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .item.prompt-item .content .text {
+            max-height: 340px;
+            font-size: 13.5px;
+            line-height: 1.7;
+        }
+
+        .item.rekomendasi .content .text {
+            border-color: #fde68a;
+            background: #fffdf5;
+        }
+
+        .item .content .text .note {
+            display: block;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #64748b;
+            font-style: italic;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 10px;
+        }
+
+        .item .content .text::-webkit-scrollbar {
+            width: 5px;
+        }
+        .item .content .text::-webkit-scrollbar-track {
+            background: #f1f4f9;
+            border-radius: 10px;
+        }
+        .item .content .text::-webkit-scrollbar-thumb {
+            background: #d0d9e6;
+            border-radius: 10px;
+        }
+
+        /* ── Tombol salin ── */
+        .copy-btn {
+            flex-shrink: 0;
+            align-self: flex-start;
+            background: #ffffff;
+            border: 1px solid #dce1e9;
+            border-radius: 12px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            line-height: 1;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            background: #3b7cff;
+            border-color: #3b7cff;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 124, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.96);
+        }
+
+        .copy-btn.copied {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+        }
+
+        .copy-btn .icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0b1a33;
+            color: #f1f5f9;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Responsif ── */
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 14px;
+                border-radius: 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-right {
+                font-size: 13px;
+                padding: 4px 14px;
+            }
+            .item {
+                padding: 14px 14px 16px 14px;
+            }
+            .item .content .text {
+                font-size: 13px;
+                padding: 12px 14px;
+                max-height: 240px;
+            }
+            .item.prompt-item .content .text {
+                max-height: 260px;
+            }
+            .copy-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+            .logo {
+                font-size: 22px;
+                padding: 4px 14px 4px 12px;
+            }
+            .subtitle {
+                font-size: 13.5px;
+                padding: 12px 16px;
+            }
+            .toast {
+                width: 90%;
+                max-width: 360px;
+                text-align: center;
+                justify-content: center;
+                padding: 14px 20px;
+            }
+            .section-divider {
+                font-size: 11px;
+                margin: 8px 0 14px 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 12px 8px;
+            }
+            .item {
+                padding: 10px 10px 14px 10px;
+            }
+            .copy-btn {
+                font-size: 13px;
+                padding: 10px;
+            }
+        }
+
+        /* ── Animasi ── */
+        .item {
+            animation: fadeUp 0.4s ease forwards;
+            opacity: 0;
+        }
+        .item:nth-child(1) { animation-delay: 0.02s; }
+        .item:nth-child(2) { animation-delay: 0.04s; }
+        .item:nth-child(3) { animation-delay: 0.06s; }
+        .item:nth-child(4) { animation-delay: 0.08s; }
+        .item:nth-child(5) { animation-delay: 0.10s; }
+        .item:nth-child(6) { animation-delay: 0.12s; }
+        .item:nth-child(7) { animation-delay: 0.14s; }
+        .item:nth-child(8) { animation-delay: 0.16s; }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── KONTEN ─── -->
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    📋 <span>PRMPY</span>
+                </div>
+                <span class="badge">prompt + hashtag</span>
+            </div>
+            <div class="header-right">
+                <span class="dot"></span>
+                <span><span id="totalItems">0</span> item</span>
+            </div>
+        </div>
+
+        <!-- Subtitle -->
+        <div class="subtitle">
+            💡 Satu halaman untuk semua kebutuhan kontenmu. 
+            <strong>Prompt video</strong> untuk iklan produk (Teknologi & Fashion) dan 
+            <strong>kumpulan hashtag</strong> affiliate Shopee sesuai kategori. 
+            Klik <strong>Salin</strong> pada blok yang diinginkan.
+        </div>
+
+        <!-- Daftar item -->
+        <div class="item-list" id="itemList">
+
+            <!-- ─── DIVIDER PROMPT ─── -->
+            <div class="section-divider">
+                <hr /> 📝 PROMPT VIDEO IKLAN <hr />
+            </div>
+
+            <!-- 1. PROMPT TEKNOLOGI -->
+            <div class="item prompt-item" data-text="Create a 10-second cinematic vertical commercial (9:16) promoting the electronic product shown in the reference image. Carefully analyze the reference image first to identify the product type, design, materials, branding, color, premium features, and intended use. Preserve every visual detail exactly as shown. Do not modify the logo, shape, proportions, buttons, ports, textures, branding, or any physical characteristics. Produce a premium luxury advertisement using realistic studio lighting, elegant reflections, macro close-ups, dynamic camera movement, shallow depth of field, HDR rendering, volumetric lighting, and cinematic color grading. Dramatically reveal the product, showcase its finest details, and conclude with a clean cinematic hero shot. AI Voice Over: Automatically generate a natural Indonesian voice-over after analyzing the product. The narration should: Match the product category. Highlight the product's most visible and realistic advantages. Sound like a premium television commercial. Be concise and perfectly timed for a 10-second advertisement. Generate unique narration for every different product. Avoid exaggerated, unverifiable, or misleading claims. Finish the narration with a natural CTA such as: 'Cek keranjang kuning di video ini untuk info selengkapnya.' Do not mention: Shopee, TikTok Shop, Tokopedia, Lazada, Any marketplace or third-party platform, External websites or applications. On-screen Text: Generate minimal premium text overlays only when necessary. Use text such as: Premium Quality, Desain Modern, Performa Andal, Ringkas & Praktis, Siap Digunakan. Final CTA text: 'Cek keranjang kuning di video ini.' Never display: Marketplace logos, Shopping platform names, Third-party branding, QR codes, URLs, Social media usernames. Audio: Premium cinematic background music, Soft electronic ambience, Clean whoosh transitions, Subtle impact sound effects synchronized with camera movement, Professionally balanced audio mix. Camera: Cinematic reveal, Macro detail shots, Orbit camera, Dolly-in movement, Slow-motion highlights, Smooth product rotation, Premium hero shot. Style: Hyper realistic, Luxury commercial, Premium electronics advertisement, Photorealistic, Ultra detailed, HDR, Studio lighting, High-end product photography, Modern minimalist aesthetic. Output Specifications: Duration: 10 seconds, Aspect Ratio: 9:16, Resolution: 4K, Frame Rate: 30 FPS. Negative Prompt: No watermark, AI artifacts, incorrect branding, distorted proportions, extra buttons or ports, duplicated objects, random text, unrealistic reflections, oversaturated colors, cartoon appearance, low-resolution textures, flickering, changes to the product's original design, marketplace logos, third-party platform names, URLs, QR codes, social media handles, promotional banners, fake discounts, fake reviews, unsupported claims, or unrelated visual elements.">
+                <div class="content">
+                    <span class="label">📌 PROMPT KATEGORI TEKNOLOGI</span>
+                    <div class="text">Create a 10-second cinematic vertical commercial (9:16) promoting the electronic product shown in the reference image.
+Carefully analyze the reference image first to identify the product type, design, materials, branding, color, premium features, and intended use. Preserve every visual detail exactly as shown. Do not modify the logo, shape, proportions, buttons, ports, textures, branding, or any physical characteristics.
+Produce a premium luxury advertisement using realistic studio lighting, elegant reflections, macro close-ups, dynamic camera movement, shallow depth of field, HDR rendering, volumetric lighting, and cinematic color grading. Dramatically reveal the product, showcase its finest details, and conclude with a clean cinematic hero shot.
+AI Voice Over: Automatically generate a natural Indonesian voice-over after analyzing the product. The narration should: Match the product category. Highlight the product's most visible and realistic advantages. Sound like a premium television commercial. Be concise and perfectly timed for a 10-second advertisement. Generate unique narration for every different product. Avoid exaggerated, unverifiable, or misleading claims. Finish the narration with a natural CTA such as: "Cek keranjang kuning di video ini untuk info selengkapnya." Do not mention: Shopee, TikTok Shop, Tokopedia, Lazada, Any marketplace or third-party platform, External websites or applications.
+On-screen Text: Generate minimal premium text overlays only when necessary. Use text such as: Premium Quality, Desain Modern, Performa Andal, Ringkas & Praktis, Siap Digunakan. Final CTA text: "Cek keranjang kuning di video ini." Never display: Marketplace logos, Shopping platform names, Third-party branding, QR codes, URLs, Social media usernames.
+Audio: Premium cinematic background music, Soft electronic ambience, Clean whoosh transitions, Subtle impact sound effects synchronized with camera movement, Professionally balanced audio mix.
+Camera: Cinematic reveal, Macro detail shots, Orbit camera, Dolly-in movement, Slow-motion highlights, Smooth product rotation, Premium hero shot.
+Style: Hyper realistic, Luxury commercial, Premium electronics advertisement, Photorealistic, Ultra detailed, HDR, Studio lighting, High-end product photography, Modern minimalist aesthetic.
+Output Specifications: Duration: 10 seconds, Aspect Ratio: 9:16, Resolution: 4K, Frame Rate: 30 FPS.
+Negative Prompt: No watermark, AI artifacts, incorrect branding, distorted proportions, extra buttons or ports, duplicated objects, random text, unrealistic reflections, oversaturated colors, cartoon appearance, low-resolution textures, flickering, changes to the product's original design, marketplace logos, third-party platform names, URLs, QR codes, social media handles, promotional banners, fake discounts, fake reviews, unsupported claims, or unrelated visual elements.</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin Prompt</span>
+                </button>
+            </div>
+
+            <!-- 2. PROMPT FASHION -->
+            <div class="item prompt-item" data-text="Create a 10-second cinematic vertical commercial (9:16) promoting the fashion product shown in the reference image. Carefully analyze the reference image first to identify the product category (shirt, jacket, hoodie, dress, pants, shoes, bag, hijab, accessories, etc.), design, fabric, stitching, textures, colors, patterns, branding, materials, fit, and visible premium details. Preserve every visual characteristic exactly as shown. Do not modify the logo, shape, proportions, stitching, fabric texture, colors, branding, or any physical details. Produce a premium luxury fashion advertisement using realistic studio lighting, cinematic lifestyle scenes, elegant model poses (only if appropriate), soft natural movement, shallow depth of field, HDR rendering, volumetric lighting, premium fabric simulation, cinematic color grading, and smooth camera transitions. Focus on showcasing: Fabric texture, Stitching quality, Elegant silhouette, Comfortable fit, Premium craftsmanship, Modern lifestyle appeal. End with a clean cinematic hero shot featuring the product as the main focus. AI Voice Over: Automatically generate a natural Indonesian voice-over after analyzing the product. The narration should: Match the fashion category. Highlight only visible and realistic features such as material appearance, stitching, comfort, style, versatility, and design. Sound like a premium television commercial. Be concise and perfectly timed for a 10-second advertisement. Generate unique narration for every different fashion product. Avoid exaggerated, unverifiable, or misleading claims. Finish with: 'Cek keranjang kuning di video ini untuk info selengkapnya.' Do not mention: Shopee, TikTok Shop, Tokopedia, Lazada, Any marketplace, Third-party platforms, External websites or applications. On-screen Text: Generate minimal premium text overlays only when necessary. Suggested overlays: Premium Material, Nyaman Dipakai, Desain Elegan, Detail Berkualitas, Fashion Modern, Tampil Percaya Diri, Gaya Sehari-hari. Final CTA: 'Cek keranjang kuning di video ini.' Never display: Marketplace logos, Shopping platform names, Third-party branding, QR codes, URLs, Social media usernames. Audio: Premium cinematic background music, Elegant ambient soundtrack, Soft fabric movement sounds, Clean whoosh transitions, Subtle impact sound effects, Professionally balanced audio mix. Camera: Cinematic opening reveal, Macro fabric close-up, Slow-motion fabric movement, Orbit camera, Dolly-in movement, Walking lifestyle shots, Natural wind interaction, Close-up stitching details, Smooth product rotation (for shoes, bags, accessories if applicable), Premium hero shot. Style: Hyper realistic, Luxury fashion commercial, Premium clothing advertisement, Photorealistic, Ultra detailed, HDR, Studio lighting, Editorial fashion photography, Modern minimalist aesthetic, Luxury brand campaign, Natural skin tones, Premium fabric rendering. Output Specifications: Duration: 10 seconds, Aspect Ratio: 9:16, Resolution: 4K, Frame Rate: 30 FPS. Negative Prompt: No watermark, AI artifacts, distorted body proportions, deformed hands, extra fingers, duplicated limbs, incorrect branding, altered product design, unrealistic fabric, plastic-looking clothes, low-quality textures, oversaturated colors, random text, marketplace logos, third-party platform names, URLs, QR codes, social media handles, fake discounts, fake reviews, unsupported claims, unrelated accessories, unrealistic poses, flickering, cartoon appearance, or low-resolution rendering. Prompt ini bersifat universal, sehingga bisa dipakai untuk hampir semua produk fashion seperti kaos, hoodie, jaket, celana, sepatu, tas, hijab, topi, dompet, hingga jam tangan, tanpa perlu mengubah strukturnya.">
+                <div class="content">
+                    <span class="label">📌 PROMPT KATEGORI FASHION</span>
+                    <div class="text">Create a 10-second cinematic vertical commercial (9:16) promoting the fashion product shown in the reference image.
+Carefully analyze the reference image first to identify the product category (shirt, jacket, hoodie, dress, pants, shoes, bag, hijab, accessories, etc.), design, fabric, stitching, textures, colors, patterns, branding, materials, fit, and visible premium details. Preserve every visual characteristic exactly as shown. Do not modify the logo, shape, proportions, stitching, fabric texture, colors, branding, or any physical details.
+Produce a premium luxury fashion advertisement using realistic studio lighting, cinematic lifestyle scenes, elegant model poses (only if appropriate), soft natural movement, shallow depth of field, HDR rendering, volumetric lighting, premium fabric simulation, cinematic color grading, and smooth camera transitions.
+Focus on showcasing: Fabric texture, Stitching quality, Elegant silhouette, Comfortable fit, Premium craftsmanship, Modern lifestyle appeal.
+End with a clean cinematic hero shot featuring the product as the main focus.
+AI Voice Over: Automatically generate a natural Indonesian voice-over after analyzing the product. The narration should: Match the fashion category. Highlight only visible and realistic features such as material appearance, stitching, comfort, style, versatility, and design. Sound like a premium television commercial. Be concise and perfectly timed for a 10-second advertisement. Generate unique narration for every different fashion product. Avoid exaggerated, unverifiable, or misleading claims. Finish with: "Cek keranjang kuning di video ini untuk info selengkapnya." Do not mention: Shopee, TikTok Shop, Tokopedia, Lazada, Any marketplace, Third-party platforms, External websites or applications.
+On-screen Text: Generate minimal premium text overlays only when necessary. Suggested overlays: Premium Material, Nyaman Dipakai, Desain Elegan, Detail Berkualitas, Fashion Modern, Tampil Percaya Diri, Gaya Sehari-hari. Final CTA: "Cek keranjang kuning di video ini." Never display: Marketplace logos, Shopping platform names, Third-party branding, QR codes, URLs, Social media usernames.
+Audio: Premium cinematic background music, Elegant ambient soundtrack, Soft fabric movement sounds, Clean whoosh transitions, Subtle impact sound effects, Professionally balanced audio mix.
+Camera: Cinematic opening reveal, Macro fabric close-up, Slow-motion fabric movement, Orbit camera, Dolly-in movement, Walking lifestyle shots, Natural wind interaction, Close-up stitching details, Smooth product rotation (for shoes, bags, accessories if applicable), Premium hero shot.
+Style: Hyper realistic, Luxury fashion commercial, Premium clothing advertisement, Photorealistic, Ultra detailed, HDR, Studio lighting, Editorial fashion photography, Modern minimalist aesthetic, Luxury brand campaign, Natural skin tones, Premium fabric rendering.
+Output Specifications: Duration: 10 seconds, Aspect Ratio: 9:16, Resolution: 4K, Frame Rate: 30 FPS.
+Negative Prompt: No watermark, AI artifacts, distorted body proportions, deformed hands, extra fingers, duplicated limbs, incorrect branding, altered product design, unrealistic fabric, plastic-looking clothes, low-quality textures, oversaturated colors, random text, marketplace logos, third-party platform names, URLs, QR codes, social media handles, fake discounts, fake reviews, unsupported claims, unrelated accessories, unrealistic poses, flickering, cartoon appearance, or low-resolution rendering.
+Prompt ini bersifat universal, sehingga bisa dipakai untuk hampir semua produk fashion seperti kaos, hoodie, jaket, celana, sepatu, tas, hijab, topi, dompet, hingga jam tangan, tanpa perlu mengubah strukturnya.</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin Prompt</span>
+                </button>
+            </div>
+
+            <!-- ─── DIVIDER HASHTAG ─── -->
+            <div class="section-divider">
+                <hr /> 🏷️ HASHTAG AFFILIATE SHOPEE <hr />
+            </div>
+
+            <!-- 3. HASHTAG UMUM -->
+            <div class="item" data-text="#affiliate #affiliateshopee #shopeeaffiliate #racunshopee #belanjaonline #belanjamurah #viral #fyp #fypindonesia #viralindonesia #rekomendasibarang #barangviral #produkhits #diskon #keranjangkuning">
+                <div class="content">
+                    <span class="label">📌 HASHTAG UMUM AFFILIATE</span>
+                    <div class="text">#affiliate #affiliateshopee #shopeeaffiliate #racunshopee #belanjaonline #belanjamurah #viral #fyp #fypindonesia #viralindonesia #rekomendasibarang #barangviral #produkhits #diskon #keranjangkuning</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+            <!-- 4. TEKNOLOGI -->
+            <div class="item" data-text="#gadgets #teknologi #aksesorishp #setupdesk #smartgadget #elektronik #tech #techtok #barangunik #alatpraktis">
+                <div class="content">
+                    <span class="label">📌 PRODUK TEKNOLOGI</span>
+                    <div class="text">#gadgets #teknologi #aksesorishp #setupdesk #smartgadget #elektronik #tech #techtok #barangunik #alatpraktis</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+            <!-- 5. FASHION -->
+            <div class="item" data-text="#fashion #outfit #ootd #fashionwanita #fashionpria #style #gayaharian #outfitinspirasi #lookbook #fashionviral">
+                <div class="content">
+                    <span class="label">📌 PRODUK FASHION</span>
+                    <div class="text">#fashion #outfit #ootd #fashionwanita #fashionpria #style #gayaharian #outfitinspirasi #lookbook #fashionviral</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+            <!-- 6. KECANTIKAN -->
+            <div class="item" data-text="#skincare #makeup #beauty #glowup #perawatanwajah #cantikalami #beautytips #skincareroutine #beautyindonesia">
+                <div class="content">
+                    <span class="label">📌 PRODUK KECANTIKAN</span>
+                    <div class="text">#skincare #makeup #beauty #glowup #perawatanwajah #cantikalami #beautytips #skincareroutine #beautyindonesia</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+            <!-- 7. RUMAH TANGGA -->
+            <div class="item" data-text="#rumahtangga #peralatanrumah #dapur #homedecor #alatrumah #rumahminimalis #barangberguna #hiduplebihmudah">
+                <div class="content">
+                    <span class="label">📌 PRODUK RUMAH TANGGA</span>
+                    <div class="text">#rumahtangga #peralatanrumah #dapur #homedecor #alatrumah #rumahminimalis #barangberguna #hiduplebihmudah</div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+            <!-- 8. REKOMENDASI -->
+            <div class="item rekomendasi" data-text="#affiliate #shopeeaffiliate #keranjangkuning #racunshopee #viral #fyp #rekomendasibarang #produkhits #belanjaonline #barangviral">
+                <div class="content">
+                    <span class="label">⭐ REKOMENDASI (8–12 HASHTAG)</span>
+                    <div class="text">#affiliate #shopeeaffiliate #keranjangkuning #racunshopee #viral #fyp #rekomendasibarang #produkhits #belanjaonline #barangviral
+                        <span class="note">✨ Jangan memenuhi caption dengan 30+ hashtag. Untuk TikTok, 8-12 hashtag yang sangat relevan biasanya lebih efektif daripada menumpuk yang tidak berhubungan.</span>
+                    </div>
+                </div>
+                <button class="copy-btn" data-copy>
+                    <span class="icon">📄</span>
+                    <span class="label-btn">Salin</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top:28px;padding-top:16px;border-top:1px solid #eef2f6;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;color:#8a9bb5;">
+            <span>✨ Pilih item, salin, dan langsung gunakan</span>
+            <span>PRMPY &bull; all‑in‑one</span>
+        </div>
+    </div>
+
+    <!-- ─── TOAST ─── -->
+    <div class="toast" id="toast">
+        <span class="check">✅</span>
+        <span id="toastMessage">Disalin!</span>
+    </div>
+
+    <!-- ─── JAVASCRIPT ─── -->
+    <script>
+        (function() {
+            'use strict';
+
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const totalSpan = document.getElementById('totalItems');
+
+            let toastTimeout = null;
+
+            const items = document.querySelectorAll('.item');
+            totalSpan.textContent = items.length;
+
+            function showToast(message) {
+                if (toastTimeout) {
+                    clearTimeout(toastTimeout);
+                    toast.classList.remove('show');
+                }
+                toastMessage.textContent = message || 'Disalin!';
+                toast.classList.add('show');
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                    toastTimeout = null;
+                }, 2200);
+            }
+
+            function copyText(text, buttonElement) {
+                if (!text) return;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text)
+                        .then(() => handleCopySuccess(buttonElement))
+                        .catch(() => fallbackCopy(text, buttonElement));
+                } else {
+                    fallbackCopy(text, buttonElement);
+                }
+            }
+
+            function fallbackCopy(text, buttonElement) {
+                try {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    textarea.style.left = '-9999px';
+                    textarea.style.top = '-9999px';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    handleCopySuccess(buttonElement);
+                } catch (err) {
+                    showToast('❌ Gagal menyalin, coba manual.');
+                }
+            }
+
+            function handleCopySuccess(buttonElement) {
+                const originalHTML = buttonElement.innerHTML;
+                buttonElement.classList.add('copied');
+                buttonElement.innerHTML = `
+                        <span class="icon">✅</span>
+                        <span class="label-btn">Tersalin!</span>
+                    `;
+                showToast('📋 Berhasil disalin ke clipboard!');
+                setTimeout(() => {
+                    buttonElement.classList.remove('copied');
+                    buttonElement.innerHTML = originalHTML;
+                }, 1800);
+            }
+
+            document.querySelectorAll('[data-copy]').forEach((btn) => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const item = this.closest('.item');
+                    if (!item) return;
+
+                    let text = item.getAttribute('data-text');
+                    if (!text) {
+                        const textEl = item.querySelector('.text');
+                        if (textEl) {
+                            const clone = textEl.cloneNode(true);
+                            const note = clone.querySelector('.note');
+                            if (note) note.remove();
+                            text = clone.textContent.trim();
+                        }
+                    }
+
+                    if (text) {
+                        copyText(text, this);
+                    } else {
+                        showToast('⚠️ Tidak ada teks untuk disalin.');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.item').forEach((item) => {
+                item.addEventListener('keydown', function(e) {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                        const btn = this.querySelector('[data-copy]');
+                        if (btn) {
+                            e.preventDefault();
+                            btn.click();
+                        }
+                    }
+                });
+                item.setAttribute('tabindex', '0');
+                item.setAttribute('role', 'button');
+            });
+
+            console.log('📋 PRMPY — 8 item siap disalin (2 prompt + 6 hashtag)!');
+        })();
+    </script>
+
+</body>
+</html>
